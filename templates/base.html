@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket Chat Room</title>
+</head>
+<body>
+    <h1>Websocket Chat Room</h1>
+    <form id="message-form" action="" onsubmit="addMessage(event)">
+        <input type="text" id="message-input">
+        <button type="submit" id="message-btn">Send</button>
+    </form>
+    <div id="chat-box"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
+    <script>
+        const socket = io()
+        const form = document.getElementById('message-form')
+        const input = document.getElementById('message-input')
+        const chatbox = document.getElementById('chat-box')
+
+        const addMessage = (event) => {
+            event.preventDefault()
+            const message = input.value;
+
+            if (message !== '') {
+                socket.emit('message', {author: 'AuthorName', message: message})
+            }
+
+            input.value = ''
+        }
+
+        socket.on('message', function(data) {
+            const p = document.createElement('p')
+            p.textContent = `${data.author}: ${data.message}`
+            chatbox.appendChild(p)
+        })
+    </script>
+</body>
+</html>
